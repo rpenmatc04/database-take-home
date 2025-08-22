@@ -121,20 +121,28 @@ def optimize_graph(
     # - All nodes must remain in the graph
     # - Edge weights must be positive and ≤ 10
 
-    # ---------------------------------------------------------------
-    # EXAMPLE: Simple strategy to meet edge count constraint
-    # This is just a basic example - you should implement a more
-    # sophisticated strategy based on query analysis!
-    # ---------------------------------------------------------------
-    inner_ring = 50
-    for index in range(num_nodes):
-        current_node = str(index)
-        optimized_graph[current_node] = {}
-        if index < inner_ring:
-            optimized_graph[current_node][str((index + 1) % inner_ring)] = 10
-        else: 
-            optimized_graph[current_node][0] = 10
-
+    # --------------------------------------------------------------
+    inner_ring = 10
+    medium_ring = 50  # Nodes 0-49 cover >99% of query targets
+    
+    for node_index in range(num_nodes):
+        node_str = str(node_index)
+        optimized_graph[node_str] = {}
+        if node_index < inner_ring:
+            # Inner ring: connect to next node in ring
+            next_node = (node_index + 1)
+            optimized_graph[node_str][str(next_node)] = 1
+        elif node_index < medium_ring:
+            # Medium ring: connect to next node in the ring, skip step 5, or node 0
+            next_node = inner_ring + ((node_index - inner_ring + 1) % (medium_ring - inner_ring)) 
+            optimized_graph[node_str][str(next_node)] = 10
+            optimized_graph[node_str]["0"] = 1
+            skip_node = inner_ring + ((node_index - inner_ring + 5) % (medium_ring - inner_ring))
+            optimized_graph[node_str][str(skip_node)] = 7
+        else:
+            # Outer nodes: connect to node 0
+            optimized_graph[node_str]["0"] = 10
+    
     # =============================================================
     # End of your implementation
     # =============================================================
