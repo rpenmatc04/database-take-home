@@ -141,7 +141,7 @@ def optimize_graph(
             optimized_graph[node_str][str(skip_node)] = 7
         else:
             # Outer nodes: connect to node 0
-            optimized_graph[node_str]["0"] = 10
+            optimized_graph[node_str]["0"] = 1
     
     # =============================================================
     # End of your implementation
